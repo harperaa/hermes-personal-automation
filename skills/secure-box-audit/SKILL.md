@@ -26,7 +26,7 @@ Approval guards and write guards protect against an honest-but-mistaken agent. T
 Before any check, detect the hosting environment. **Do not skip this; the expectations below differ by host.**
 
 - If `RAILWAY_PROJECT_ID` or `RAILWAY_ENVIRONMENT` is set in the environment: mode = **RAILWAY**
-- Else if `/.dockerenv` exists or `/proc/1/cgroup` mentions `docker` or `containerd`: mode = **CONTAINER**
+- Else if the Docker marker file `.dockerenv` exists at the filesystem root, or PID 1's cgroup listing mentions `docker`/`containerd` (run `PID=1; cat /proc/$PID/cgroup`): mode = **CONTAINER**
 - Else: mode = **VPS**
 
 State the detected mode in one line at the top of any report you send.
@@ -39,7 +39,7 @@ State the detected mode in one line at the top of any report you send.
    - `security.allow_private_urls` is `true`
 3. Confirm memory approval is on if `sunday-ledger` or any memory-writing job is installed (`memory.write_approval: true`). Report if not.
 4. List gateway allowlist entries from the environment (`GATEWAY_ALLOWED_USERS`, `TELEGRAM_ALLOWED_USERS`, etc.). Report any you cannot account for, and report as a FINDING if `GATEWAY_ALLOW_ALL_USERS` is set to a truthy value.
-5. Determine the user the gateway runs as via `id -u` and `/proc/1/status` (do **not** rely on `ps` or `pgrep` - slim images often lack them).
+5. Determine the user the gateway runs as via `id -u`, and PID 1's status file when needed (`PID=1; grep Uid /proc/$PID/status`) - do **not** rely on `ps` or `pgrep`, slim images often lack them.
 
 ## Checks - VPS mode only
 6. `terminal.backend` should be `docker`, `ssh`, or a cloud sandbox. Report `local` as a FINDING.

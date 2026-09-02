@@ -29,10 +29,15 @@ for s in $SKILLS; do
     continue
   fi
   echo "install: $s"
-  if hermes skills install --yes "$REPO_RAW/skills/$s/SKILL.md"; then
+  out=$(hermes skills install --yes "$REPO_RAW/skills/$s/SKILL.md" 2>&1)
+  echo "$out" | tail -n 6
+  # the CLI exits 0 even when the security scan blocks the install —
+  # verify the skill actually landed on disk
+  if [ -f "$HH/skills/$s/SKILL.md" ] \
+     || ls "$HH"/skills/*/"$s"/SKILL.md >/dev/null 2>&1; then
     installed=$((installed+1))
   else
-    echo "FAILED:  $s"
+    echo "FAILED:  $s (not installed — see scan output above)"
     failed=$((failed+1))
   fi
 done
