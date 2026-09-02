@@ -44,14 +44,14 @@ State the detected mode in one line at the top of any report you send.
 ## Checks - VPS mode only
 6. `terminal.backend` should be `docker`, `ssh`, or a cloud sandbox. Report `local` as a FINDING.
 7. `terminal.docker_forward_env` should be empty. Report if not.
-8. `~/.hermes/.env` should exist and be mode 600. Report anything more permissive.
+8. The secrets file (`.env` inside the hermes home directory) should exist and be mode 600 - verify with `stat`, never by reading it. Report anything more permissive.
 9. Gateway running as root (uid 0) is a FINDING.
 10. Report the age of the most recent backup of `~/.hermes/`. Older than 7 days is a FINDING.
 
 ## Checks - RAILWAY and CONTAINER mode only
 6. `terminal.backend` will be `local` - that is expected, not a finding. Railway prohibits privileged containers and Docker daemon access; the service container is the isolation boundary. Say so once in INFO, not as a FINDING.
 7. If uid is 0, report as INFO (not FINDING) with the note: "running as root - if this is the RAILWAY_RUN_UID=0 volume workaround, confirm it is still required; otherwise unset it."
-8. `~/.hermes/.env` may not exist - Railway injects secrets as environment variables. Report as a FINDING only if a `.env` **does** exist **and** is more permissive than 600, or if any file named `.env` appears inside the repo/volume in a location that could be committed.
+8. The secrets file may not exist on Railway - secrets are injected as environment variables instead. Report as a FINDING only if a secrets file **does** exist in the hermes home **and** is more permissive than 600 (again: `stat`, never read it), or if one appears inside the repo/volume where it could be committed.
 9. **Exposure check - the important one.** If `RAILWAY_PUBLIC_DOMAIN` is set, the service has a public URL. Then:
    - If the dashboard is running (`hermes dashboard` process, or `dashboard.enabled` / a dashboard port in config) and bound to anything other than `127.0.0.1`: when an auth provider gates it (basic-auth env vars set, or a claim-login/auth plugin such as the AICVC mentor-auth is installed), report INFO — "public dashboard, gated by <provider>" — a hosted dashboard IS the product on managed deployments like the AICVC template. Report a FINDING only when the public dashboard has NO auth provider in front of it.
    - Note in INFO that the public domain exists at all, and whether it is needed (a Telegram-only bot does not need one - webhooks are outbound).
