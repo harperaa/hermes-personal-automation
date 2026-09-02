@@ -32,7 +32,17 @@ The full build guide — mechanisms, steps, verification, cost notes, GUI equiva
 
 **Start with Level 0.** Read [SECURITY.md](SECURITY.md) first. These skills schedule an autonomous agent against your personal data, and the boundary matters more than any individual automation.
 
-**Way 1 — the skills pipeline (gets you the one-tap suggestion):**
+**Way 1 — the idempotent installer (recommended):**
+
+```bash
+git clone https://github.com/harperaa/hermes-personal-automation.git
+cd hermes-personal-automation && bash install.sh          # everything missing
+bash install.sh expiry-desk quiet-inbox                   # or just these
+```
+
+Safe to re-run any time: existing skills are skipped untouched, only missing ones install, and each new one registers its schedule as a `/suggestions` entry (already-dismissed suggestions stay dismissed — the dedup latch is upstream). It also stages `expiry-desk.py` into `~/.hermes/scripts/`.
+
+**Way 1b — a single skill by URL:**
 
 ```bash
 hermes skills install https://raw.githubusercontent.com/harperaa/hermes-personal-automation/main/skills/expiry-desk/SKILL.md

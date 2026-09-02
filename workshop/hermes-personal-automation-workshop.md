@@ -1333,7 +1333,18 @@ Installing a blueprint never silently schedules anything — it registers as a *
 /suggestions catalog      # browse the curated starter automations
 ```
 
-That's the correct trust model, and it's worth internalizing before you hand anything to anyone. Also try `/blueprint <name>` — it walks you through the required fields one question at a time and schedules on confirmation.
+Numbers are positional — re-run `/suggestions` before acting on one; the list renumbers after every accept or dismiss.
+
+**Dismissal is a one-way door.** A dismissed suggestion latches by its dedup key: reinstalling the skill will never re-offer it (that's consent-first working as designed — "no" shouldn't mean "ask me again next update"). If you change your mind later, don't hunt for an un-dismiss; just schedule the job directly — this is exactly what accept does under the hood, so the result is identical:
+
+```bash
+hermes cron create "0 9 1 * *" "Run the monthly security audit and report only findings." \
+  --name "blueprint:secure-box-audit" --skill secure-box-audit
+```
+
+**Installs are idempotent.** `install.sh` at the repo root can be re-run any time: skills you already have are skipped untouched, only missing ones are installed, and your accepted/dismissed decisions are preserved. Pulling the latest collection onto an existing box is just `git pull && bash install.sh`.
+
+That's the correct trust model, and it's worth internalizing before you hand anything to anyone. (`/blueprint <name>` is a separate, built-in catalog of curated automations — it walks you through fields one question at a time; the skills in this repo flow through `/suggestions`, not `/blueprint`.)
 
 **Part 2 — Build a boot checklist (60 min)**
 
