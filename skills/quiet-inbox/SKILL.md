@@ -47,7 +47,8 @@ This skill reads mail. Set it up against a **dedicated account** with only the c
 On a short interval, gated so the agent only wakes when mail actually arrived.
 
 ## Procedure
-1. For each unread message: summarize in one line and classify as ACTION, FYI, or IGNORE.
+0. Read your cron notepad (injected above your prompt). `last_seen` holds the newest message id/timestamp you already triaged - only process mail newer than it, and update it at the end of the run (`hermes cron notepad <your job id> set last_seen <value>`).
+1. For each unread message newer than `last_seen`: summarize in one line and classify as ACTION, FYI, or IGNORE.
 2. For each ACTION, write a draft reply to `drafts_path` as a separate file named `YYYY-MM-DD-<sender>-<slug>.md`. **Do not send it.**
 3. Extract commitments - anything the user promised, anything someone is waiting on, anything with a date - and append them to `commitments_path` as `- [ ] <what> | <who> | <when> | <source>`.
 4. Report a short digest: counts by class, and one line per ACTION.

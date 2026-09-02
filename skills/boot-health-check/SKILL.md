@@ -24,7 +24,7 @@ A broken automation is indistinguishable from a quiet one. Every silence-by-defa
 
 ## Procedure
 1. Run `hermes cron list`. Report any job that is paused unexpectedly or whose last run failed.
-2. Run `hermes cron incidents`. Report unacknowledged incidents with their error signature.
+2. Run `hermes cron incidents`. Report unacknowledged incidents with their error signature - but only ones you have not already reported: keep a `reported_incidents` list in your cron notepad (`hermes cron notepad <your job id> set reported_incidents <ids>`) and add newly reported ids to it. Never acknowledge the incidents themselves.
 3. Confirm the data files the automations depend on exist and parse:
    - `~/life/renewals.csv`
    - `~/life/purchases.md`

@@ -1342,6 +1342,11 @@ hermes cron create "0 9 1 * *" "Run the monthly security audit and report only f
   --name "blueprint:secure-box-audit" --skill secure-box-audit
 ```
 
+**Your jobs have memory — use it.** Two upstream cron features matter here:
+
+- **The notepad** — every cron job gets a durable key-value scratchpad (16KB per key), automatically injected into each run's prompt. The agent writes it with `hermes cron notepad <job_id> set <key> <value>`. `money-watch` uses it to remember the last price it reported (no more re-alerting the same drop every four hours), `quiet-inbox` keeps its last-seen-mail watermark there, and `boot-health-check` remembers which incidents it already told you about.
+- **Continuity** (`--continuity` on `hermes cron create`) — injects the previous run's *output* into the next run's prompt. Good for narrative continuity; the notepad is the authoritative store for structured state.
+
 **Installs are idempotent.** `install.sh` at the repo root can be re-run any time: skills you already have are skipped untouched, only missing ones are installed, and your accepted/dismissed decisions are preserved. Pulling the latest collection onto an existing box is just `git pull && bash install.sh`.
 
 That's the correct trust model, and it's worth internalizing before you hand anything to anyone. (`/blueprint <name>` is a separate, built-in catalog of curated automations — it walks you through fields one question at a time; the skills in this repo flow through `/suggestions`, not `/blueprint`.)

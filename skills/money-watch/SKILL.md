@@ -39,15 +39,25 @@ stock | Replacement filter | https://... | any | out since June
 - `protect` - price-protection window; alert if it drops below what was paid, while the claim window is open
 - `stock` - alert when it becomes available
 
+## Your memory between runs - the cron notepad
+Your job's durable notepad is injected into every run; write to it with the
+terminal tool: `hermes cron notepad <your job id> set <key> <value>`. Use it as
+the single source of truth for what you already reported:
+
+- `seen:<label>` - the last value you REPORTED for that row (price or stock
+  state). Only report again when the current value differs.
+- `closed:<label>` - set to `1` after announcing a protect window's close, so
+  it is announced exactly once.
+
 ## Procedure
-1. Read the watchlist. For each row, fetch the page and extract the current price or availability.
+1. Read the watchlist AND your notepad. For each row, fetch the page and extract the current price or availability.
 2. Compare against the threshold according to `type`.
-3. For `protect` rows, ignore the row entirely once the claim window has passed - and say so once, on the day it closes.
-4. Report only rows that crossed. Include the current value, the threshold, and the direct link.
-5. If nothing crossed, or every fetch failed, reply with ONLY `[SILENT]`.
+3. For `protect` rows, ignore the row entirely once the claim window has passed - announce the close exactly once (check `closed:<label>` first, set it after).
+4. Report only rows that crossed AND whose value differs from `seen:<label>`. Include the current value, the threshold, and the direct link - then update `seen:<label>`.
+5. If nothing new crossed, or every fetch failed, reply with ONLY `[SILENT]`.
 
 ## Pitfalls
-- Create this job with continuity enabled (`hermes cron create ... --continuity`, or accept the suggestion and enable continuity when prompted) - without it, the job re-reports the same drop every four hours.
+- The notepad is what stops this job re-reporting the same drop every four hours - never skip the `seen:` bookkeeping. (`--continuity` on the job adds the previous run's text too, but the notepad is the authoritative dedupe.)
 - A page that fails to load is not a price change. Stay silent, and only report a fetch that has failed repeatedly.
 - Never place an order or follow a checkout link. Report and stop.
 - Prices in the page may include or exclude delivery. Say which you read.
