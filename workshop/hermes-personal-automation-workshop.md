@@ -295,6 +295,16 @@ Never run the gateway as root.
 
 If you're on the official Docker image, remember `docker exec` defaults to root — run pairing commands as `-u hermes` or the approval file gets written with the wrong ownership and is silently ignored.
 
+## Confirm you have a push channel — before you rely on silence
+
+Every skill in this collection delivers with `deliver: origin`: reports go to the chat where you accepted the suggestion, falling back to your configured home channel. On a clean run they send *nothing* (`[SILENT]`). That design only works if there is somewhere for the non-silent runs to land.
+
+If you only ever talk to Hermes through the **dashboard chat** and never connect a messaging platform, there is no push channel — findings exist only in the dashboard's **Cron tab** run history, which nobody checks on a Tuesday. A broken boundary that reports into a tab you never open is indistinguishable from a healthy one. So, before Level 1:
+
+1. **Connect one push platform** (Telegram is the usual choice) and set it as your home channel, **or** decide — explicitly, out loud — that checking the Cron tab is part of your weekly rhythm.
+2. **Test it**: `hermes cron create "* * * * *" "Say exactly: delivery test OK" --name delivery-test`, wait a minute, confirm the message reaches your phone, then `hermes cron delete delivery-test`.
+3. Accept suggestions **from the chat you want reports in** — that conversation becomes each job's origin.
+
 ### Verification
 - [ ] Hermes is running on something that is not your primary machine
 - [ ] A second account messaging your bot gets denied or a pairing code — test this yourself
@@ -303,6 +313,7 @@ If you're on the official Docker image, remember `docker exec` defaults to root 
 - [ ] `approvals.cron_mode` is `deny`
 - [ ] `hermes doctor` is clean or every advisory is consciously acknowledged
 - [ ] You have restored from backup onto a different machine at least once
+- [ ] A test cron message actually reached your phone (or you've committed to the Cron tab check)
 - [ ] You can state in one paragraph what the agent can reach — write it down; you'll extend it at Level 10
 
 ### Cost note
