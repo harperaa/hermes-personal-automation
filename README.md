@@ -74,6 +74,41 @@ hermes cron create "0 8 * * *" "<the blueprint prompt from its SKILL.md>" \
 
 ### Timezones — read this once
 
+## Resetting or reinstalling a blueprint
+
+A suggestion is offered once. Accepting it creates the cron job and marks the suggestion *accepted*; dismissing marks it *dismissed*. Neither is offered again on its own, so a reset is three steps:
+
+```
+/cron list                    # note the job id (blueprint:<name>)
+/cron remove <job-id>         # delete the job; old run output stays in ~/.hermes/cron/output/
+/suggestions clear            # forget the "accepted" record (dismissed ones are kept — that is your "no")
+```
+
+Nothing re-offers the blueprint until its schedule is registered again. Do one of these:
+
+- **Hermes Plugins image (Railway):** redeploy the service — the boot seed re-registers every installed blueprint that is not pending, accepted or dismissed. Or run the seed by hand from the chat terminal:
+
+  ```bash
+  /opt/hermes/.venv/bin/python /opt/hermes-plugins-dist/personal_automation_seed.py
+  ```
+
+- **Self-hosted install:** re-run `install.sh` — it tops the `/suggestions` backlog up for every installed blueprint.
+
+Then `/suggestions` lists it again and `/suggestions accept N` recreates the job. Fire it right away with `/cron run <new-id>` rather than waiting for its schedule.
+
+**Want the latest SKILL.md too?** Installs never overwrite an existing skill folder. Delete it first, then re-run the seed or `install.sh`:
+
+```bash
+rm -rf ~/.hermes/skills/<name>
+```
+
+**Changed your mind about a dismissal?** Dismissed stays dismissed on purpose. Skip the suggestion and schedule the job directly — this is exactly what accept does under the hood (schedule and prompt are in each SKILL.md front matter):
+
+```bash
+hermes cron create "0 9 1 * *" "Run the monthly security audit and report only findings." \
+  --name "blueprint:secure-box-audit" --skill secure-box-audit
+```
+
 Cron schedules run in the **server's** timezone. Railway containers run UTC, so `30 6 * * *` fires at 6:30 UTC — 2:30am US Eastern. Either set a `TZ` service variable (e.g. `TZ=America/New_York`) on your Railway service, or shift the hours in each blueprint before accepting.
 
 Test any skill before scheduling it:

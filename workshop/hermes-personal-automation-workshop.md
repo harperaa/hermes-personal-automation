@@ -1349,6 +1349,22 @@ hermes cron create "0 9 1 * *" "Run the monthly security audit and report only f
 
 **Installs are idempotent.** `install.sh` at the repo root can be re-run any time: skills you already have are skipped untouched, only missing ones are installed, and your accepted/dismissed decisions are preserved. Pulling the latest collection onto an existing box is just `git pull && bash install.sh`.
 
+**Resetting a blueprint you already accepted.** Accepting is also a one-way door for the suggestion itself — the job exists, so the offer is gone. To start over (a failed first run, or you want the job recreated clean):
+
+```
+/cron list                    # note the job id (blueprint:<name>)
+/cron remove <job-id>         # delete the job; its old run output stays in ~/.hermes/cron/output/
+/suggestions clear            # forget the "accepted" record — dismissed ones are kept
+```
+
+`clear` alone brings nothing back: something has to register the schedule again. On the Hermes Plugins image that is the boot seed, so either redeploy the Railway service or run it from the chat terminal:
+
+```bash
+/opt/hermes/.venv/bin/python /opt/hermes-plugins-dist/personal_automation_seed.py
+```
+
+On a self-hosted box, re-run `bash install.sh` — it tops the `/suggestions` backlog up for every installed blueprint. Then `/suggestions` lists it again, `/suggestions accept N` recreates the job, and `/cron run <new-id>` fires it now. Installs never overwrite an existing skill folder, so if you also want the newest SKILL.md, `rm -rf ~/.hermes/skills/<name>` before the seed or `install.sh` runs.
+
 That's the correct trust model, and it's worth internalizing before you hand anything to anyone. (`/blueprint <name>` is a separate, built-in catalog of curated automations — it walks you through fields one question at a time; the skills in this repo flow through `/suggestions`, not `/blueprint`.)
 
 **Part 2 — Build a boot checklist (60 min)**
