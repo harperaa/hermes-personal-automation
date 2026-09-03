@@ -43,7 +43,7 @@ cd hermes-personal-automation && bash install.sh          # everything missing
 bash install.sh expiry-desk quiet-inbox                   # or just these
 ```
 
-Safe to re-run any time: existing skills are skipped untouched, only missing ones install, and each new one registers its schedule as a `/suggestions` entry (already-dismissed suggestions stay dismissed — the dedup latch is upstream). It also stages `expiry-desk.py` into `~/.hermes/scripts/`.
+Safe to re-run any time (on the Hermes Plugins image the boot seed also upgrades a skill you have not edited when a newer one ships, and keeps one you have): existing skills are skipped untouched, only missing ones install, and each new one registers its schedule as a `/suggestions` entry (already-dismissed suggestions stay dismissed — the dedup latch is upstream). It also stages `expiry-desk.py` into `~/.hermes/scripts/`.
 
 **Way 1b — a single skill by URL:**
 
