@@ -30,7 +30,7 @@ The full build guide — mechanisms, steps, verification, cost notes, GUI equiva
 
 ## Install
 
-**On the Hermes Plugins image (Railway) there is nothing to install.** All eleven are already on the box. Open **Cron → Blueprints** in the dashboard: the *Personal Automation* section lists them numbered in workshop order, each with a form — when it runs, where it reports, what it should focus on, and the skill's own settings (your city, file paths). **Schedule** creates the job; **Save changes** edits it later; **Run now** fires it; **Remove** takes it off and puts it back in `/suggestions`. The `/suggestions` list in chat is the same eleven, as a second door.
+**On the Hermes Plugins image (Railway) there is nothing to install.** All eleven are already on the box. Open **Cron → Blueprints** in the dashboard: the *Personal Automation* section lists them numbered in workshop order, each with a form — when it runs, where it reports, what it should focus on, and the skill's own settings (your city, file paths). Every file a blueprint reads (the watchlist, renewals, purchase ledger, kitchen inventory, commitments, the people folder) can be opened and edited right there: **Edit file** starts from our example when the file does not exist yet, and **Save file** creates it — no hunting for `~/life/`. **Schedule** creates the job; **Save changes** edits it later; **Run now** fires it and waits for the result; **Remove** takes it off and puts it back in `/suggestions`. The `/suggestions` list in chat is the same eleven, as a second door.
 
 
 **Start with Level 0.** Read [SECURITY.md](SECURITY.md) first. These skills schedule an autonomous agent against your personal data, and the boundary matters more than any individual automation.
