@@ -57,6 +57,36 @@ if { [ -f "$HH/skills/expiry-desk/SKILL.md" ] \
   fi
 fi
 
+# Register the schedule of EVERY installed blueprint as a /suggestions entry.
+# `hermes skills install` does this too, but upstream caps the pending
+# backlog at 5 and silently drops the rest — and a re-run skips existing
+# skills, so dropped ones would never be offered. This step tops the
+# backlog up for the curated set only; suggestions already pending,
+# accepted, or dismissed are left exactly as they are (dedup latch).
+HPY="$(dirname "$(command -v hermes)")/python"
+[ -x "$HPY" ] || HPY=python3
+"$HPY" - "$HH" $SKILLS <<'PYEOF' 2>/dev/null || echo "note: could not top up suggestions (schedule manually if needed)"
+import os, sys, pathlib
+hh = pathlib.Path(sys.argv[1]); names = sys.argv[2:]
+os.environ.setdefault("HERMES_HOME", str(hh))
+try:
+    import hermes_cli
+    sys.path.insert(0, str(pathlib.Path(hermes_cli.__file__).resolve().parent.parent))
+except Exception:
+    sys.exit(1)
+import cron.suggestions as cs
+cs.MAX_PENDING = max(cs.MAX_PENDING, 24)
+from tools.blueprints import parse_blueprint, register_blueprint_suggestion
+n = 0
+for name in names:
+    for md in list(hh.glob(f"skills/{name}/SKILL.md")) + list(hh.glob(f"skills/*/{name}/SKILL.md")):
+        spec = parse_blueprint(md.read_text(encoding="utf-8"))
+        if spec is not None and register_blueprint_suggestion(spec):
+            n += 1
+        break
+print(f"suggestions topped up: {n} newly registered")
+PYEOF
+
 echo
 echo "Done: $installed installed, $skipped skipped, $failed failed."
 [ "$installed" -gt 0 ] && echo "Run /suggestions in chat to schedule the new ones."
