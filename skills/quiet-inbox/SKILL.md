@@ -38,7 +38,10 @@ unread mail"):
 
 If the scheduled run finds no mail tool available, it must say
 "no mail access - set up the mail path from the quiet-inbox skill" ONCE,
-then reply [SILENT] on later runs. Never guess at mail contents.
+then reply [SILENT] on later runs. The "once" is tracked in the cron notepad:
+if `mail_access_warned` is already set, reply [SILENT]; otherwise warn and set it
+(`hermes cron notepad <your job id> set mail_access_warned <today>`). Delete the
+key when a mail tool appears. Never guess at mail contents.
 
 ## Read This Before Installing
 This skill reads mail. Set it up against a **dedicated account** with only the categories you want automated forwarded into it. Your primary inbox - with its 2FA codes, password resets, and banking notifications - should never be reachable by the agent. Filter at the source, not after.

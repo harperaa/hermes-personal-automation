@@ -29,7 +29,14 @@ metadata:
 Weekday mornings, before the user is up.
 
 ## Setup
-Set `city` and `travel_minutes` in skill config. Without a city this skill cannot run - say so rather than guessing a location.
+This skill needs your city. Set it once (Hermes stores it under `skills.config` in `config.yaml`; `hermes setup` also prompts for it):
+
+```bash
+hermes config set skills.config.out_the_door.city "Denver, CO"
+hermes config set skills.config.out_the_door.travel_minutes 25
+```
+
+Without a city this skill cannot run - say so and show the command above rather than guessing a location.
 
 ## Output Format
 Exactly these sections, in this order, under 80 words total:

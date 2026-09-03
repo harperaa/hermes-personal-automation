@@ -58,7 +58,7 @@ the single source of truth for what you already reported:
 
 ## Pitfalls
 - The notepad is what stops this job re-reporting the same drop every four hours - never skip the `seen:` bookkeeping. (`--continuity` on the job adds the previous run's text too, but the notepad is the authoritative dedupe.)
-- A page that fails to load is not a price change. Stay silent, and only report a fetch that has failed repeatedly.
+- A page that fails to load is not a price change. Stay silent, and only report a fetch that has failed repeatedly: keep `fail:<label>` in the notepad (increment on a failed fetch, delete it on success) and mention the row once it reaches 3 - then reset the counter so the reminder is not repeated every run.
 - Never place an order or follow a checkout link. Report and stop.
 - Prices in the page may include or exclude delivery. Say which you read.
 
