@@ -8,7 +8,10 @@ metadata:
     tags: [blueprint, money, admin, level-1]
     requires_toolsets: [file]
     config:
-      ledger_path: "~/life/purchases.md"
+      - key: return_desk.ledger_path
+        default: "~/life/purchases.md"
+        description: Purchase ledger (markdown table of item, bought date, return window, warranty, notes)
+        prompt: Purchase ledger file
     blueprint:
       schedule: "0 8 * * *"
       deliver: origin
@@ -22,7 +25,7 @@ metadata:
 Whenever the user says they bought something, and once daily to check what is about to lapse.
 
 ## Inputs
-`ledger_path` (default `~/life/purchases.md`) - a markdown table:
+`return_desk.ledger_path` (default `~/life/purchases.md`) - a markdown table:
 
 ```markdown
 | Item | Bought | Return window | Warranty | Notes |
