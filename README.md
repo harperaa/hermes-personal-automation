@@ -30,6 +30,9 @@ The full build guide — mechanisms, steps, verification, cost notes, GUI equiva
 
 ## Install
 
+**On the Hermes Plugins image (Railway) there is nothing to install.** All eleven are already on the box. Open **Cron → Blueprints** in the dashboard: the *Personal Automation* section lists them numbered in workshop order, each with a form — when it runs, where it reports, what it should focus on, and the skill's own settings (your city, file paths). **Schedule** creates the job; **Save changes** edits it later; **Run now** fires it; **Remove** takes it off and puts it back in `/suggestions`. The `/suggestions` list in chat is the same eleven, as a second door.
+
+
 **Start with Level 0.** Read [SECURITY.md](SECURITY.md) first. These skills schedule an autonomous agent against your personal data, and the boundary matters more than any individual automation.
 
 **Way 1 — the idempotent installer (recommended):**
